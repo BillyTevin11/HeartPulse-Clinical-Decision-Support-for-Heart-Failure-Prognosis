@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartPulse AI | Clinical Decision Support</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <header class="flex justify-between items-center mb-10">
+            <div class="flex items-center space-x-3">
+                <div class="bg-red-500 p-2 rounded-lg shadow-lg shadow-red-200">
+                    <i class="fa-solid fa-heart-pulse text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">HeartPulse <span class="text-blue-600">AI</span></h1>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Mortality Risk Analytics</p>
+                </div>
+            </div>
+            <div class="hidden md:block text-right">
+                <span class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold">
+                    <i class="fa-solid fa-circle-check mr-1"></i> Model: RF-Optimized-Recall
+                </span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <section class="lg:col-span-7">
+                <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 border border-slate-100 h-full">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-xl font-bold flex items-center">
+                            <i class="fa-solid fa-user-doctor mr-3 text-blue-500"></i> New Patient Assessment
+                        </h2>
+                        <span class="text-xs text-slate-400 font-medium italic">* All fields required</span>
+                    </div>
+
+                    <form id="predictionForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1">
+                                <label class="text-sm font-bold text-slate-700">Age</label>
+                                <input type="number" name="age" step="1" value="65" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition duration-200">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-bold text-slate-700">Sex</label>
+                                <select name="sex" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-sm font-bold text-slate-700">Ejection Fraction (%)</label>
+                                <input type="number" name="ejection_fraction" value="25" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-bold text-slate-700">Serum Creatinine (mg/dL)</label>
+                                <input type="number" name="serum_creatinine" step="0.1" value="1.8" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-bold text-slate-700">Serum Sodium (mEq/L)</label>
+                                <input type="number" name="serum_sodium" value="130" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-bold text-slate-700">Follow-up Time (Days)</label>
+                                <input type="number" name="time" value="7" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-500">Platelets</label>
+                                <input type="number" name="platelets" value="265000" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-500">CPK Enzyme</label>
+                                <input type="number" name="creatinine_phosphokinase" value="582" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm">
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" name="high_blood_pressure" value="1" class="w-4 h-4 text-blue-600 rounded">
+                                    <span class="text-sm font-semibold text-slate-700">Hypertension</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" name="diabetes" value="1" class="w-4 h-4 text-blue-600 rounded">
+                                    <span class="text-sm font-semibold text-slate-700">Diabetes</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" name="anaemia" value="1" class="w-4 h-4 text-blue-600 rounded">
+                                    <span class="text-sm font-semibold text-slate-700">Anaemia</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" name="smoking" value="1" class="w-4 h-4 text-blue-600 rounded">
+                                    <span class="text-sm font-semibold text-slate-700">Smoker</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-2xl shadow-xl transition duration-300 transform hover:-translate-y-1 flex items-center justify-center">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Calculate Prognosis
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="lg:col-span-5">
+                <div id="resultPanel" class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 border border-slate-100 h-full flex flex-col items-center justify-center min-h-[500px] transition-all duration-500">
+                    
+                    <div id="idleState" class="text-center">
+                        <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-stethoscope text-4xl text-slate-200"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Awaiting Data</h3>
+                        <p class="text-slate-400 max-w-xs mx-auto text-sm leading-relaxed">Fill in the patient clinical markers to generate a mortality risk prediction and impact analysis.</p>
+                    </div>
+
+                    <div id="resultState" class="hidden w-full text-center">
+                        <div id="statusBadge" class="inline-block px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6"></div>
+                        
+                        <div class="relative mb-8">
+                            <h3 id="riskTitle" class="text-4xl font-black mb-2"></h3>
+                            <p class="text-slate-400 font-bold text-xs uppercase tracking-tighter">Calculated Risk Score</p>
+                        </div>
+
+                        <div class="w-full bg-slate-100 rounded-full h-4 mb-3 overflow-hidden shadow-inner">
+                            <div id="progressBar" class="h-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                        </div>
+                        <div id="scoreText" class="text-5xl font-extrabold text-slate-800 tracking-tighter mb-10">0%</div>
+
+                        <div class="mt-8 pt-8 border-t border-slate-100 text-left">
+                            <div class="flex items-center justify-between mb-6">
+                                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest">Top Risk Drivers</h4>
+                                <i class="fa-solid fa-circle-info text-slate-300"></i>
+                            </div>
+                            
+                            <div id="explanationList" class="space-y-5">
+                                </div>
+                            
+                            <p class="mt-8 text-[10px] text-slate-400 leading-relaxed italic">
+                                * Impact represents the approximate change in risk probability compared to a neutral clinical baseline.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Collect and Format Form Data
+            const formData = new FormData(e.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                // Handle checkboxes (1 for checked, 0 for not)
+                if (['high_blood_pressure', 'diabetes', 'anaemia', 'smoking'].includes(key)) {
+                    data[key] = 1;
+                } else {
+                    data[key] = parseFloat(value);
+                }
+            });
+            
+            // Set default 0 for unchecked clinical flags
+            ['high_blood_pressure', 'diabetes', 'anaemia', 'smoking'].forEach(key => {
+                if (!data[key]) data[key] = 0;
+            });
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+
+                if (result.status === 'failed') {
+                    alert("Error: " + result.message);
+                    return;
+                }
+
+                // UI Transitions
+                document.getElementById('idleState').classList.add('hidden');
+                const resultState = document.getElementById('resultState');
+                resultState.classList.remove('hidden');
+
+                // Update Risk Information
+                const riskTitle = document.getElementById('riskTitle');
+                const badge = document.getElementById('statusBadge');
+                const bar = document.getElementById('progressBar');
+                const score = document.getElementById('scoreText');
+                const percentage = (result.probability_score * 100).toFixed(1);
+
+                score.innerText = percentage + '%';
+                bar.style.width = percentage + '%';
+                riskTitle.innerText = result.risk_level;
+
+                // Color Coding Logic
+                if (result.mortality_prediction === 1) {
+                    badge.className = "inline-block px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6 bg-red-100 text-red-600";
+                    riskTitle.className = "text-4xl font-black mb-2 text-red-600";
+                    bar.className = "h-full transition-all duration-1000 ease-out bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]";
+                } else {
+                    badge.className = "inline-block px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6 bg-emerald-100 text-emerald-600";
+                    riskTitle.className = "text-4xl font-black mb-2 text-emerald-600";
+                    bar.className = "h-full transition-all duration-1000 ease-out bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]";
+                }
+
+                // Render Explainability Section
+                const explanationList = document.getElementById('explanationList');
+                explanationList.innerHTML = ''; 
+
+                result.explanations.forEach(item => {
+                    const isRiskFactor = item.impact > 0;
+                    // Scale impact for visual bar (capped at 100%)
+                    const impactWidth = Math.min(Math.abs(item.impact) * 400, 100); 
+                    
+                    const row = `
+                        <div class="group">
+                            <div class="flex justify-between items-center text-[11px] font-bold mb-1.5">
+                                <span class="text-slate-600">${item.feature}</span>
+                                <span class="${isRiskFactor ? 'text-red-500' : 'text-emerald-500'} flex items-center">
+                                    <i class="fa-solid ${isRiskFactor ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'} mr-1 text-[10px]"></i>
+                                    ${(Math.abs(item.impact) * 100).toFixed(1)}% Impact
+                                </span>
+                            </div>
+                            <div class="w-full bg-slate-50 h-1.5 rounded-full overflow-hidden border border-slate-100">
+                                <div class="h-full ${isRiskFactor ? 'bg-red-400' : 'bg-emerald-400'} group-hover:opacity-80 transition-opacity" 
+                                     style="width: ${impactWidth}%"></div>
+                            </div>
+                        </div>
+                    `;
+                    explanationList.innerHTML += row;
+                });
+
+            } catch (err) {
+                console.error(err);
+                alert("Critical Connection Error: Ensure Flask server is running on port 5000.");
+            }
+        });
+    </script>
+</body>
+</html>
